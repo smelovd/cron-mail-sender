@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class CronJobService {
     private final SchedulerService schedulerService;
 
     public PaginationResponse<CronJob> findAllPaginate(int page, int count) {
+        log.info("Finding cron jobs page: " + page + ", with count: " + count);
         Pageable pageable = PageRequest.of(page - 1, count, Sort.by("createdOn").descending()); //TODO maybe created_on
         Page<CronJob> paginatedResponse = cronJobRepository.findAll(pageable);
 
@@ -71,7 +73,7 @@ public class CronJobService {
     }
 
     @SneakyThrows
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CronJob updateById(int id, @Valid UpdateCronJobDto updateCronJobDto) {
         log.info("try to update cron job with id: " + id);
         CronJob cronJob = cronJobRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);

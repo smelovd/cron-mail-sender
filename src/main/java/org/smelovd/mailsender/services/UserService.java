@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public PaginationResponse<User> findAllPaginate(int page, int count, String email, String username) {
+        log.info("Finding users page: " + page + ", with count: " + count);
         Pageable pageable = PageRequest.of(page - 1, count, Sort.by("createdOn").descending());
         Page<User> paginatedResponse = findAllOrFilteredIfEmailOrUsernameExist(pageable, email, username);
 
@@ -81,7 +83,7 @@ public class UserService {
     }
 
     @SneakyThrows
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public User updateUserById(int id, UpdateUserDto updateUserDto) {
         log.info("try to update email/username user with id: " + id);
         User user = userRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
@@ -93,7 +95,7 @@ public class UserService {
 
         user.update(updateUserDto);
         userRepository.save(user);
-        log.info("Updated user: " + user);
+        log.info("Updated user with id: " + id);
 
         return user;
     }

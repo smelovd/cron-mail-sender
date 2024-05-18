@@ -46,13 +46,13 @@ public class MailService {
     }
 
     public void sendTemplate(User user, SEND_TYPE type) {
-        log.info("Sending mail to: " + user.getId());
+        log.info("Sending template mail to: " + user.getId());
         sendTemplate(user);
         logService.save(user, type);
     }
 
     public void sendTemplateToAllUsers(SEND_TYPE type) {
-        log.info("Sending mail to all users");
+        log.info("Sending template mail to all users");
         List<User> users = userService.findAll();
         Date createdOn = new Date();
 

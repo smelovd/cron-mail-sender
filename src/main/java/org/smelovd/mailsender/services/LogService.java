@@ -24,6 +24,7 @@ public class LogService {
     private final LogRepository logRepository;
 
     public PaginationResponse<LogResponse> findAllPaginate(int page, int count) {
+        log.info("Finding logs page: " + page + ", with count: " + count);
         Pageable pageable = PageRequest.of(page - 1, count);
         Page<LogResponse> paginatedResponse = logRepository.findAllLogResponsesOrderByCount(pageable);
 

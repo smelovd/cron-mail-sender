@@ -63,11 +63,12 @@ public class CronJobService {
 
     @SneakyThrows
     public CronJob findById(int id) {
+        log.info("Finding cron job by id: " + id);
         return cronJobRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
     }
 
     public void deleteById(int id) {
-        log.info("Deleting user by id (if exist): " + id);
+        log.info("Deleting cron job by id (if exist): " + id);
         cronJobRepository.deleteById(id);
         schedulerService.stopTaskByCronJobId(id);
     }

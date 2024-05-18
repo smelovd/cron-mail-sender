@@ -9,8 +9,10 @@ import org.smelovd.mailsender.services.UserService;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,49 +25,58 @@ public class MailService {
     private final UserService userService;
     private final LogService logService;
 
-    private void send(User to, String subject, String text) { //TODO async?
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(to.getEmail());
-            message.setSubject(subject);
-            message.setText(text);
+    @Async("threadPoolTaskExecutor")
+    public void send(User to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to.getEmail());
+        message.setSubject(subject);
+        message.setText(text);
 
-            mailSender.send(message);
-            log.info("Mail sent to: " + to.getId());
-        } catch (MailException e) {
-            log.error("Mail sending failed: " + e.getMessage());
-            throw new RuntimeException("Mail sending failed: " + e.getMessage());
-        }
+        mailSender.send(message);
+        log.info("Mail sent to: " + to.getId());
     }
+
 
     private void sendTemplate(User user) {
         String text =
                 "Username: " + user.getUsername() +
-                "\nCreation date: " + user.getCreatedOn();
+                        "\nCreation date: " + user.getCreatedOn();
+
         send(user, "Hello!", text);
     }
 
     public void sendTemplate(User user, SEND_TYPE type) {
         log.info("Sending template mail to: " + user.getId());
-        sendTemplate(user);
-        logService.save(user, type);
+        try {
+            sendTemplate(user);
+            logService.save(user, type);
+        } catch (MailException e) {
+            log.error("Mail sending failed: " + e.getMessage());
+        }
     }
 
+    @Async("threadPoolTaskExecutorScheduler")
     public void sendTemplateToAllUsers(SEND_TYPE type) {
         log.info("Sending template mail to all users");
-        List<User> users = userService.findAll();
         Date createdOn = new Date();
+        List<User> users = userService.findAll();
 
-        List<User> successSentUsers = users.stream()
-                .filter(user -> {
+        List<User> failedUsers = new ArrayList<>(); //TODO set default capacity
+
+        users.parallelStream()
+                .forEach(user -> {
                     try {
                         sendTemplate(user);
-                        return true;
-                    } catch (RuntimeException e) {
-                        return false;
+                    } catch (MailException e) { //TODO retry?
+                        log.warn("Mail sending failed: " + e.getMessage() + ", to user with id: " + user.getId());
+                        failedUsers.add(user);
                     }
-                }).toList();
+                });
 
-        logService.saveAll(successSentUsers, type, createdOn);
+        logService.saveAll(
+                users.stream().filter(user -> !failedUsers.contains(user)).toList(), //TODO optimize
+                type,
+                createdOn
+        );
     }
 }

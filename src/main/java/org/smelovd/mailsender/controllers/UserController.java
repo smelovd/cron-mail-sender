@@ -5,11 +5,10 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.smelovd.mailsender.entities.User;
-import org.smelovd.mailsender.entities.enums.SEND_TYPE;
 import org.smelovd.mailsender.models.PaginationResponse;
 import org.smelovd.mailsender.models.user.CreateUserDto;
 import org.smelovd.mailsender.models.user.UpdateUserDto;
-import org.smelovd.mailsender.senders.MailService;
+import org.smelovd.mailsender.services.MailService;
 import org.smelovd.mailsender.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -58,6 +57,6 @@ public class UserController {
 
     @PostMapping("{id}/send")
     public void sendMail(@PathVariable("id") int id) { //TODO add Body?
-        mailService.sendTemplate(userService.findById(id), SEND_TYPE.REST);
+        mailService.send(userService.findById(id));
     }
 }

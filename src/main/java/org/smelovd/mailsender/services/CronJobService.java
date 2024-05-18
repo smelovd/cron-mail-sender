@@ -57,7 +57,7 @@ public class CronJobService {
         CronJob newCronJob = cronJobRepository.save(CronJob.builder().expression(createCronJobDto.getExpression()).build());
         log.info("New cron job created with id: " + newCronJob.getId());
 
-        schedulerService.scheduleSendingToAllUsers(newCronJob);
+        schedulerService.scheduleSendingTemplatesToAllUsers(newCronJob);
         return newCronJob;
     }
 
@@ -70,7 +70,7 @@ public class CronJobService {
     public void deleteById(int id) {
         log.info("Deleting cron job by id (if exist): " + id);
         cronJobRepository.deleteById(id);
-        schedulerService.stopTaskByCronJobId(id);
+        schedulerService.stopScheduledTaskByCronJobId(id);
     }
 
     @SneakyThrows
@@ -88,8 +88,8 @@ public class CronJobService {
         cronJobRepository.save(cronJob);
         log.info("Updated cron: " + cronJob);
 
-        schedulerService.stopTaskByCronJobId(id);
-        schedulerService.scheduleSendingToAllUsers(cronJob);
+        schedulerService.stopScheduledTaskByCronJobId(id);
+        schedulerService.scheduleSendingTemplatesToAllUsers(cronJob);
 
         return cronJob;
     }
@@ -107,6 +107,6 @@ public class CronJobService {
         log.info("Scheduling cron jobs");
         List<CronJob> cronJobs = findAll();
 
-        cronJobs.forEach(schedulerService::scheduleSendingToAllUsers);
+        cronJobs.forEach(schedulerService::scheduleSendingTemplatesToAllUsers);
     }
 }

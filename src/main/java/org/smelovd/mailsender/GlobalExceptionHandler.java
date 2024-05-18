@@ -1,10 +1,12 @@
 package org.smelovd.mailsender;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Stream;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -35,4 +38,13 @@ public class GlobalExceptionHandler {
     public String NotFoundHandler() {
         return "Entity/ies not found";
     }
+
+    @ExceptionHandler(MailException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String mailError(MailException e) {
+        log.error("Mail Sent failed: " + e.getMessage());
+        return "Mail sent failed, retry later!";
+    }
+
+    //TODO fix exception handlers
 }

@@ -24,39 +24,39 @@ public class UserController {
     private final UserService userService;
     private final MailService mailService;
 
-    @GetMapping("")
+    @GetMapping
     public PaginationResponse<User> getAllUsersPaginate(
-            @RequestParam @Min(1) int page,
-            @RequestParam @Min(1) int count,
+            @RequestParam @Min(1) final int page,
+            @RequestParam @Min(1) final int count,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String username
     ) {
         return userService.findAllPaginate(page, count, email, username);
     }
 
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@Valid @RequestBody CreateUserDto createUserDto) {
+    public User createUser(@Valid @RequestBody final CreateUserDto createUserDto) {
         return userService.createUser(createUserDto);
     }
 
     @GetMapping("{id}")
-    public User getUserById(@PathVariable("id") int id) {
+    public User getUserById(@PathVariable("id") final int id) {
         return userService.findById(id);
     }
 
     @DeleteMapping("{id}")
-    public void deleteUserById(@PathVariable("id") int id) {
+    public void deleteUserById(@PathVariable("id") final int id) {
         userService.deleteById(id);
     }
 
     @PutMapping("{id}")
-    public User updateUserById(@PathVariable("id") int id, @Valid @RequestBody UpdateUserDto updateUserDto) {
+    public User updateUserById(@PathVariable("id") final int id, @Valid @RequestBody final UpdateUserDto updateUserDto) {
         return userService.updateUserById(id, updateUserDto);
     }
 
     @PostMapping("{id}/send")
-    public void sendMail(@PathVariable("id") int id) { //TODO add Body?
+    public void sendMail(@PathVariable("id") final int id) {
         mailService.send(userService.findById(id));
     }
 }

@@ -22,33 +22,32 @@ public class CronJobController {
 
     private final CronJobService cronJobService;
 
-    @GetMapping("")
+    @GetMapping
     public PaginationResponse<CronJob> getAllCronJobPaginate(
-            @RequestParam @Min(1) int page,
-            @RequestParam @Min(1) int count
+            @RequestParam @Min(1) final int page,
+            @RequestParam @Min(1) final int count
     ) {
         return cronJobService.findAllPaginate(page, count);
     }
 
     @GetMapping("{id}")
-    public CronJob getCronJobById(@PathVariable("id") int id) {
+    public CronJob getCronJobById(@PathVariable("id") final int id) {
         return cronJobService.findById(id);
     }
 
     @DeleteMapping("{id}")
-    public void deleteCronJobById(@PathVariable("id") int id) {
+    public void deleteCronJobById(@PathVariable("id") final int id) {
         cronJobService.deleteById(id);
-
     }
 
     @PutMapping("{id}")
-    public CronJob updateCronJobById(@PathVariable("id") int id, @Valid @RequestBody UpdateCronJobDto updateCronJobDto) {
+    public CronJob updateCronJobById(@PathVariable("id") final int id, @Valid @RequestBody final UpdateCronJobDto updateCronJobDto) {
         return cronJobService.updateById(id, updateCronJobDto);
     }
 
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CronJob createCronJob(@Valid @RequestBody CreateCronJobDto createCronJobDto) {
+    public CronJob createCronJob(@Valid @RequestBody final CreateCronJobDto createCronJobDto) {
         return cronJobService.createCronJob(createCronJobDto);
     }
 }

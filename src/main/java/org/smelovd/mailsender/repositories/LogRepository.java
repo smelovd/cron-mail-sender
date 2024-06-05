@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LogRepository extends JpaRepository<Log, Integer> {
 
-    Page<Log> findAll(Pageable pageable);
-
     @Query("SELECT NEW org.smelovd.mailsender.models.log.LogResponse(" +
             "u.username, " +
             "u.email, " +
@@ -24,5 +22,5 @@ public interface LogRepository extends JpaRepository<Log, Integer> {
             "LEFT JOIN logs l ON u.id = l.user.id " +
             "GROUP BY u.id " +
             "ORDER BY COUNT(l)")
-    Page<LogResponse> findAllLogResponsesOrderByCount(Pageable pageable);
+    Page<LogResponse> findAllLogResponsesOrderByCount(final Pageable pageable);
 }

@@ -12,7 +12,7 @@ public class ThreadPoolConfiguration {
 
     @Bean(name = "threadPoolTaskScheduler")
     public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
-        ThreadPoolTaskScheduler threadPool = new ThreadPoolTaskScheduler();
+        final ThreadPoolTaskScheduler threadPool = new ThreadPoolTaskScheduler();
         threadPool.setPoolSize(Runtime.getRuntime().availableProcessors());
         threadPool.setThreadNamePrefix("scheduler::");
 
@@ -20,8 +20,8 @@ public class ThreadPoolConfiguration {
     }
 
     @Bean(name = "threadPoolTaskExecutorScheduler")
-    public Executor asyncSchedulerThreadPool() {
-        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
+    public  Executor asyncSchedulerThreadPool() {
+        final ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
         threadPool.setCorePoolSize(6);
         threadPool.setMaxPoolSize(12);
         threadPool.setThreadNamePrefix("schedulerTask::");

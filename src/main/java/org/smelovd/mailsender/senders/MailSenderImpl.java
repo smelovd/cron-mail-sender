@@ -16,8 +16,7 @@ public class MailSenderImpl {
     private final JavaMailSender mailSender;
 
     @Retryable(backoff = @Backoff(delay = 1000))
-    public void send(SimpleMailMessage... message) {
+    public void send(final SimpleMailMessage... message) {
         mailSender.send(message);
     }
-    //TODO specific mail exception handler
 }

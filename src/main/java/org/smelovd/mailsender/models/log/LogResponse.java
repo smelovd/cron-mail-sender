@@ -1,21 +1,18 @@
 package org.smelovd.mailsender.models.log;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
-public class LogResponse {
+public final class LogResponse {
 
-    private String username;
-    private String email;
-    private Count count;
-    private Date first;
-    private Date last;
+    private final String username;
+    private final String email;
+    private final Count count;
+    private final Date first;
+    private final Date last;
 
     public LogResponse(String username, String email, Long rest, Long cron, Date first, Date last) {
         this.username = username;
@@ -25,12 +22,7 @@ public class LogResponse {
         this.last = last;
     }
 
-    @Data
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Count {
-        private long rest;
-        private long cron;
+    public record Count(long rest, long cron) {
     }
 }

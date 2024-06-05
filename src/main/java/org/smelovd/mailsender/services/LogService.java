@@ -23,10 +23,10 @@ public class LogService {
 
     private final LogRepository logRepository;
 
-    public PaginationResponse<LogResponse> findAllPaginate(int page, int count) {
-        log.info("Finding logs page: " + page + ", with count: " + count);
-        Pageable pageable = PageRequest.of(page - 1, count);
-        Page<LogResponse> paginatedResponse = logRepository.findAllLogResponsesOrderByCount(pageable);
+    public PaginationResponse<LogResponse> findAllPaginate(final int page, final int count) {
+        log.info("Finding logs page: {}, with count: {}", page, count);
+        final Pageable pageable = PageRequest.of(page - 1, count);
+        final Page<LogResponse> paginatedResponse = logRepository.findAllLogResponsesOrderByCount(pageable);
 
         return PaginationResponse.<LogResponse>builder()
                 .content(paginatedResponse.getContent())
@@ -37,7 +37,7 @@ public class LogService {
                 .build();
     }
 
-    public void save(User user, SEND_TYPE type) {
+    public void save(final User user, final SEND_TYPE type) {
         logRepository.save(Log.builder()
                 .type(type)
                 .user(user)

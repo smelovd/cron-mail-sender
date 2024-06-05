@@ -6,10 +6,10 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class UpdateUserDto {
+public final class UpdateUserDto {
 
-    private String username;
+    private final String username;
 
     @Email(message = "Email Is not email")
-    private String email;
+    private final String email;
 }

@@ -35,6 +35,6 @@ public class CronJob {
     private Date createdOn;
 
     public void update(UpdateCronJobDto updateCronJobDto) {
-        setExpression(updateCronJobDto.getExpression());
+        setExpression(updateCronJobDto.expression());
     }
 }

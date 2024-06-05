@@ -21,10 +21,10 @@ public class MailService {
     private final UserService userService;
     private final LogService logService;
 
-    public void send(User user) {
-        log.info("Sending mail template to: " + user.getId());
+    public void send(final User user) {
+        log.info("Sending mail template to: {}", user.getId());
         mailSender.send(getSimpleMailMessage(user));
-        log.info("Mail sent to user with id: " + user.getId());
+        log.info("Mail sent to user with id: {}", user.getId());
 
         logService.save(user, SEND_TYPE.REST);
     }
@@ -41,14 +41,14 @@ public class MailService {
         logService.saveAll(users, SEND_TYPE.CRON, createdOn);
     }
 
-    private SimpleMailMessage[] getSimpleMailMessages(List<User> users) {
+    private SimpleMailMessage[] getSimpleMailMessages(final List<User> users) {
         return users.stream()
                 .map(this::getSimpleMailMessage)
                 .toArray(SimpleMailMessage[]::new);
     }
 
-    private SimpleMailMessage getSimpleMailMessage(User user) {
-        SimpleMailMessage message = new SimpleMailMessage();
+    private SimpleMailMessage getSimpleMailMessage(final User user) {
+        final SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getEmail());
         message.setSubject("Hello!");
         message.setText(getTemplate(user));
@@ -56,7 +56,7 @@ public class MailService {
         return message;
     }
 
-    private String getTemplate(User user) {
+    private String getTemplate(final User user) {
         return "Username: " + user.getUsername() +
                 "\nCreation date: " + user.getCreatedOn();
     }

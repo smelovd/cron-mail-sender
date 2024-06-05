@@ -21,8 +21,8 @@ public class LogController {
 
     private final LogService logService;
 
-    @GetMapping("")
-    public PaginationResponse<LogResponse> getAllUsersPaginate(@RequestParam @Min(1) int page, @RequestParam @Min(1) int count) {
+    @GetMapping
+    public PaginationResponse<LogResponse> getAllUsersPaginate(@RequestParam @Min(1) final int page, @RequestParam @Min(1) final int count) {
         return logService.findAllPaginate(page, count);
     }
 }
